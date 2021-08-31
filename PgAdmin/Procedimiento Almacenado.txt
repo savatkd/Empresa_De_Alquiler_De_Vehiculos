@@ -1,0 +1,36 @@
+--prcedimiento almacenado-- 
+--ingresar un parametro de entrada (placa)y que salga cuantos mantemientos realizados y cuantos a salido de alquiler--
+
+create or replace function vehiculo(varchar(40))
+returns text
+as
+$$
+declare 
+	rec alias for $1;
+	reco record;
+	Vehicu cursor for select
+		vehiculo.placa_vehiculo, 
+		mantenimiento.numero_mantenimiento, 
+		reservar.hora_reserva
+	FROM 
+		public.vehiculo
+		inner join public.mantenimiento on vehiculo.id_vehiculo = mantenimiento.id_vehiculo
+		inner join public.reservar on vehiculo.id_vehiculo = reservar.id_vehiculo
+	WHERE 
+		vehiculo.placa_vehiculo = $1;
+	begin
+		open Vehicu;
+		fetch Vehicu into reco;
+		raise notice
+			'Vehiculo: %', reco.placa_vehiculo;
+		while (found) loop
+			raise notice'mantenimiento: % reserva: %', reco.numero_mantenimiento, reco.hora_reserva;
+		fetch Vehicu into reco;
+		end loop;	
+	end;
+$$
+language plpgsql;
+
+
+--Insert de consulta--
+select vehiculo('ax-33');

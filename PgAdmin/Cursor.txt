@@ -1,0 +1,33 @@
+
+--cursor--
+--Por cada placa , cuanto es generado por ventas, generado por mantenimiento--
+do 
+$$
+DECLARE 
+	recorrer record;
+	todo cursor for SELECT 
+		vehiculo.placa_vehiculo as placa, 
+		mantenimiento.gasto_mantenimiento as gastos, 
+		factura.total_factura as total
+	FROM 
+		public.servicio, 
+		public.vehiculo_servicio, 
+		public.vehiculo, 
+		public.mantenimiento, 
+		public.factura_servicio, 
+		public.factura	
+	WHERE
+		servicio.id_servicio = vehiculo_servicio.id_servicio AND
+		servicio.id_servicio = factura_servicio.id_servicio AND
+		vehiculo.id_vehiculo = vehiculo_servicio.id_vehiculo AND
+		vehiculo.id_vehiculo = mantenimiento.id_vehiculo AND
+		factura_servicio.id_factura = factura.id_factura;
+BEGIN	
+	OPEN todo;
+	FETCH todo INTO recorrer;
+	while (found) loop
+		RAISE NOTICE 'recorre: % gastos: % total: %',recorrer.placa,recorrer.gastos,recorrer.total;
+	FETCH todo INTO recorrer;
+	end loop;	
+end $$
+Language 'plpgsql';

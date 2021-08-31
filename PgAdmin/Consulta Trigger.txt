@@ -1,0 +1,26 @@
+--trigger--
+--ver el alquiler de los vehiculos si estan dañado a este mecanico esta defectuoso implosible de enviarle otro vechiculo--
+
+CREATE OR REPLACE FUNCTION reparacion() RETURNS TRIGGER
+AS
+$reparacion$
+  DECLARE
+    intro int;
+    max int = 1;
+BEGIN
+    select numero_mantenimiento into intro from mantenimiento;
+    if ( max < intro ) then
+      RAISE EXCEPTION 'EL vehiculo excede el limite de reparacion posibles';
+    END if;
+    RETURN new;
+END;
+$reparacion$
+LANGUAGE plpgsql;
+--before after instead of
+create trigger reparacion before insert
+on mantenimiento fOR EACH ROW
+execute procedure reparacion();
+
+
+--INSERTAR DATOS VERIFICAR TRIGGER--
+--Insert into MANTENIMIENTO values (11,1,'Asientos','11','08:00','Cinco',90,'Forros');
