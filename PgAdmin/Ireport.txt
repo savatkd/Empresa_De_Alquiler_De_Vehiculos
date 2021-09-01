@@ -1,0 +1,12 @@
+--General un Ireport el tipo de vehiculo la cantindad de mantenimiento que ha tenido y el tipo de mantenimiento--
+SELECT 
+  vehiculo.placa_vehiculo, 
+  cast (mantenimiento.numero_mantenimiento as int),
+  mantenimiento.tipo_mantenimiento, 
+  vehiculo.tipo_vehiculo
+FROM 
+  public.vehiculo, 
+  public.mantenimiento
+WHERE 
+  vehiculo.id_vehiculo = mantenimiento.id_vehiculo;
+  
